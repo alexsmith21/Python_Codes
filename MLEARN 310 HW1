@@ -1,0 +1,175 @@
+# Homework 1 MLEARN 310
+
+# -*- coding: utf-8 -*-
+# <nbformat>3.0</nbformat>
+
+# <codecell>
+
+from numpy import *
+import matplotlib.pyplot as plt
+
+%matplotlib inline
+
+sample_train_1 = "C:/Users/Alex.Smith/Desktop/Data Science, Course 2 ML/MLEARN 310/Lecture 1/hw1_sample1_train.txt"
+sample_train_2 = "C:/Users/Alex.Smith/Desktop/Data Science, Course 2 ML/MLEARN 310/Lecture 1/hw1_sample2_train.txt"
+sample_test_1 = "C:/Users/Alex.Smith/Desktop/Data Science, Course 2 ML/MLEARN 310/Lecture 1/hw1_sample1_test.txt"
+sample_test_2 = "C:/Users/Alex.Smith/Desktop/Data Science, Course 2 ML/MLEARN 310/Lecture 1/hw1_sample2_test.txt"
+
+# <codecell>
+
+train_1 = loadtxt(sample_train_1)
+train_2 = loadtxt(sample_train_2)
+test_1 = loadtxt(sample_test_1)
+test_2 = loadtxt(sample_test_2)
+
+#print train_1
+
+# <codecell>
+
+# MSE Function
+
+def MSE(actual, predicted):
+    Sigma_actual = sum(actual)
+    Sigma_predicted = sum(predicted)
+    n = len(actual)
+    error = (Sigma_predicted - Sigma_actual)**2
+    error = error / n
+    return error
+
+# test the function
+w_hat = [3,6,5,2,67,3,2]
+e_actual = [3,5,7,2,3,4,8]
+print MSE(e_actual, w_hat) 
+
+# <codecell>
+
+X = [a[0] for a in train_1]
+y = [a[1] for a in train_1]
+
+plt.plot(X,y, 'ro')
+
+x_test1 = [a[0] for a in test_1]
+y_test1 = [a[1] for a in test_1]
+x_test2 = [a[0] for a in test_2]
+y_test2 = [a[1] for a in test_2]
+
+
+print test_2
+
+# <codecell>
+
+X_2 = [a[0] for a in train_2]
+y_2 = [a[1] for a in train_2]
+
+# <codecell>
+
+# Build the models
+# Model 1, train1 least squares
+plt.plot(X,y, 'ro')
+XX = [[1,a] for a in X]
+
+x,_,_,_ = linalg.lstsq(XX, y)
+print x
+t = arange(-4,4,0.1)
+values = x[0] + (x[1]*t)
+plt.plot(t, values)
+
+# Get MSE
+
+test = x[0] + (x[1]*x_test1)
+
+print MSE(y, values) #22.9983
+print MSE(y_test1, test) # 579.69
+
+# <codecell>
+
+#Model 2
+plt.plot(X_2,y_2, 'ro')
+XX = [[1,a] for a in X_2]
+
+x,_,_,_ = linalg.lstsq(XX, y_2)
+print x
+t = arange(-4,4,0.1)
+values = x[0] + x[1]*1
+plt.plot(t, x[0] + x[1]*t)
+
+# GET MSE
+test = x[0] + (x[1]*x_test2)
+print MSE(y_test2, test) #5869.233
+
+# <codecell>
+
+# Cubic model, train 1
+plt.plot(X,y, 'ro')
+cubic = [[1, a, (a)**2, (a)**3] for a in X]
+cubic_model,_,_,_ = linalg.lstsq(cubic, y)
+print cubic_model
+t = arange(-4,4, 0.1)
+values = cubic_model[0] + cubic_model[1]*t + cubic_model[2]*(t**2) + cubic_model[3]*(t**3)
+
+plt.plot(t, values)
+
+# GET MSE
+for i in range(0, len(x_test1)):
+               test = array(cubic_model[0] + cubic_model[1]*x_test1[i] + cubic_model[2]*(x_test1[i]**2) + cubic_model[3]*(x_test1[i]**3))
+
+print MSE(y_test1, test) #570.83
+
+# <codecell>
+
+# Cubic model, train 1
+plt.plot(X_2,y_2, 'ro')
+cubic = [[1, a, (a)**2, (a)**3] for a in X_2]
+cubic_model,_,_,_ = linalg.lstsq(cubic, y_2)
+print cubic_model
+t = arange(-4,4, 0.1)
+values = cubic_model[0] + cubic_model[1]*t + cubic_model[2]*(t**2) + cubic_model[3]*(t**3)
+
+plt.plot(t, values)
+
+# GET MSE
+for i in range(0, len(x_test2)):
+    test = array(cubic_model[0] + cubic_model[1]*x_test2[i] + cubic_model[2]*(x_test2[i]**2) + cubic_model[3]*(x_test2[i]**3))
+    
+
+print MSE(y_test2, test) #5924.859
+
+# <codecell>
+
+# Splines
+plt.plot(X,y, 'ro')
+
+spline = [[1,a,a**2, a**3, max(X)+2**2, max(X)**3, max(X)-2**3] for a in X] # These are the weights
+spline_model,_,_,_, = linalg.lstsq(spline, y)
+print spline_model
+t = arange(-4,4, 0.1)
+print max(t)
+values = spline_model[0] + spline_model[1]*t + spline_model[2]*(t**2) + spline_model[3]*(t**3) + spline_model[4]*(max(t)+2)**3 + spline_model[5]*(max(t))**3 + spline_model[6]*(max(t)-2)**3
+plt.plot(t, values)
+
+# GET MSE 
+
+for i in range(0, len(x_test1)):
+    test_p = array(spline_model[0] + spline_model[1]*x_test1[i] + spline_model[2]*(x_test1[i]**2) + spline_model[3]*(x_test1[i]**3) + spline_model[4]*(max(x_test1)+2)**3 + spline_model[5]*(max(x_test1))**3 + spline_model[6]*(max(x_test1)-2)**3)
+
+print MSE(y_test1, test_p) # 568.33
+
+# <codecell>
+
+# Splines, train2
+plt.plot(X_2,y_2, 'ro')
+
+spline = [[1,a,a**2, a**3, (max(X_2)+2)**2, m**3, (max(X_2)-2)**3] for a in X_2] # These are the weights
+spline_model,_,_,_, = linalg.lstsq(spline, y_2)
+print spline_model
+t = arange(-4,4, 0.1)
+values = spline_model[0] + spline_model[1]*t + spline_model[2]*(t**2) + spline_model[3]*(t**3) + spline_model[4]*(max(t)+2)**3 + spline_model[5]*(max(t))**3 + spline_model[6]*(max(t)-2)**3
+plt.plot(t, values)
+
+# GET MSE 
+
+for i in range(0, len(x_test2)):
+   test_p = array(spline_model[0] + spline_model[1]*x_test2[i] + spline_model[2]*(x_test2[i]**2) + spline_model[3]*(x_test2[i]**3) + spline_model[4]*(max(x_test2)+2)**3 + spline_model[5]*(max(x_test2))**3 + spline_model[6]*(max(x_test2)-2)**3)
+
+print MSE(y_test2, test_p) # 5809.955
+
