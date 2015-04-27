@@ -1,0 +1,111 @@
+# -*- coding: utf-8 -*-
+# <nbformat>3.0</nbformat>
+
+# <headingcell level=1>
+
+# Russ Engineering
+
+# <codecell>
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+%matplotlib inline
+
+# <codecell>
+
+path = "C:/Users/Alex.Smith/Desktop/Data Analysis Repository/Projects/Wright State University/Predictive model files/Russ Engineering/Russ Engineering.csv"
+
+# <codecell>
+
+x = pd.read_csv(path, sep=',')
+print x.head(10)
+
+x.dtypes
+
+# <codecell>
+
+x = x[~np.isnan(x['BTU'])]
+
+one = x[x.tag == 'AHU-01']
+two = x[x.tag == 'AHU-02']
+three = x[x.tag == 'AHU-03']
+four = x[x.tag == 'AHU-04']
+five = x[x.tag == 'AHU-05']
+six = x[x.tag == 'AHU-06']
+
+# <codecell>
+
+one_vars = pd.DataFrame(one, columns = ['TEMP', 'RH'])
+one_y = one.BTU
+
+from sklearn import linear_model
+
+regr = linear_model.LinearRegression()
+fit = regr.fit(X = one_vars, y = one_y)
+
+print fit.coef_, fit.intercept_
+
+
+# <codecell>
+
+two_vars = pd.DataFrame(two, columns = ['TEMP', 'RH'])
+two_y = two.BTU
+
+from sklearn import linear_model
+
+regr = linear_model.LinearRegression()
+fit = regr.fit(X = two_vars, y = two_y)
+
+print fit.coef_, fit.intercept_
+                    
+
+# <codecell>
+
+three_vars = pd.DataFrame(three, columns = ['TEMP', 'RH'])
+three_y = three.BTU
+
+from sklearn import linear_model
+
+regr = linear_model.LinearRegression()
+fit = regr.fit(X = three_vars, y = three_y)
+
+print fit.coef_, fit.intercept_
+
+# <codecell>
+
+four_vars = pd.DataFrame(four, columns = ['TEMP', 'RH'])
+four_y = four.BTU
+
+from sklearn import linear_model
+
+regr = linear_model.LinearRegression()
+fit = regr.fit(X = four_vars, y = four_y)
+
+print fit.coef_, fit.intercept_
+
+# <codecell>
+
+five_vars = pd.DataFrame(five, columns = ['TEMP', 'RH'])
+five_y = five.BTU
+
+from sklearn import linear_model
+
+regr = linear_model.LinearRegression()
+fit = regr.fit(X = five_vars, y = five_y)
+
+print fit.coef_, fit.intercept_
+
+# <codecell>
+
+six_vars = pd.DataFrame(six, columns = ['TEMP', 'RH'])
+six_y = six.BTU
+
+from sklearn import linear_model
+
+regr = linear_model.LinearRegression()
+fit = regr.fit(X = six_vars, y = six_y)
+
+print fit.coef_, fit.intercept_
+
